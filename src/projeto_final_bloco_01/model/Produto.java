@@ -52,6 +52,7 @@ public abstract class Produto {
 		
 		switch(this.categoria) {
 			case 1 -> categoria = "Fruto Seco";
+			case 2 -> categoria = "Tempero";
 			default -> categoria = "Inválido";
 		}
 		

@@ -6,6 +6,7 @@ import java.util.Scanner;
 import projeto_final_bloco_01.controller.Controller;
 import projeto_final_bloco_01.model.FrutoSeco;
 import projeto_final_bloco_01.model.Produto;
+import projeto_final_bloco_01.model.Tempero;
 import projeto_final_bloco_01.util.Cores;
 
 public class Menu {
@@ -14,7 +15,7 @@ public class Menu {
 	
 	public static void main(String[] args) {
 		int opcao;
-		//criarProdutosTeste();
+//		criarProdutosTeste();
 		
 		while (true) {
 			
@@ -113,7 +114,7 @@ public class Menu {
 		System.out.print("Digite o nome do produto: ");
 		String nome = leia.nextLine();
 
-		System.out.print("Digite o Categoria do produto (1 - FrutoSeco): ");
+		System.out.print("Digite o Categoria do produto (1 - FrutoSeco | 2 - Tempero): ");
 		int categoria = leia.nextInt();
 
 		System.out.print("Digite o Preço do produto: ");
@@ -127,7 +128,17 @@ public class Menu {
 			
 			produtoController.cadastrar(new FrutoSeco(produtoController.gerarId(), nome, preco,  categoria, tipoFruto));
 		}
-		default -> System.out.println(Cores.TEXT_RED + "Categoria de produto inválido!" + Cores.TEXT_RESET);
+		case 2 -> {
+			System.out.print("Digite o Sabor: ");
+			leia.skip("\\R");
+			String sabor = leia.nextLine();
+			
+			System.out.print("Digite a Origem (País): ");
+			String origem = leia.nextLine();
+			
+			produtoController.cadastrar(new Tempero(produtoController.gerarId(), nome, preco,  categoria, sabor, origem));
+		}
+			default -> System.out.println(Cores.TEXT_RED + "Categoria de produto inválido!" + Cores.TEXT_RESET);
 		}
 	}
 	
@@ -199,6 +210,23 @@ public class Menu {
 				tipoFruto = entrada.isEmpty() ? tipoFruto : Integer.parseInt(entrada.replace(",", "."));
 				produtoController.atualizar(new FrutoSeco(id, nome, preco, categoria, tipoFruto));
 			}
+			case 2 -> {
+				String sabor = ((Tempero) produto).getSabor();
+				String origem = ((Tempero) produto).getOrigem();
+				
+				System.out.printf(
+						"O Sabor atual é: %s\nDigite o novo sabor (Pressione ENTER para manter o valor atual): ",
+						sabor);
+				entrada = leia.nextLine();
+				sabor = entrada.isEmpty() ? sabor : entrada;
+				
+				System.out.printf(
+						"A Origem atual é: %s\nDigite a nova Origem (Pressione ENTER para manter o valor atual): ",
+						origem);
+				entrada = leia.nextLine();
+				origem = entrada.isEmpty() ? origem : entrada;
+				produtoController.atualizar(new Tempero(id, nome, preco, categoria, sabor, origem));
+			}
 			default -> System.out.println(Cores.TEXT_RED + "Categoria de produto inválido!" + Cores.TEXT_RESET);
 			}
 
@@ -206,5 +234,4 @@ public class Menu {
 			System.out.printf("\nO produto número %d não foi encontrado!", id);
 		}
 	}
-
 }
