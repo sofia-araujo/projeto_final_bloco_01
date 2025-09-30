@@ -3,27 +3,20 @@ package projeto_final_bloco_01;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import projeto_final_bloco_01.controller.Controller;
 import projeto_final_bloco_01.model.FrutoSeco;
 import projeto_final_bloco_01.model.Produto;
 import projeto_final_bloco_01.util.Cores;
 
 public class Menu {
 	private static final Scanner leia = new Scanner(System.in);
+	private static final Controller produtoController = new Controller();
 	
 	public static void main(String[] args) {
 		int opcao;
+		//criarProdutosTeste();
 		
 		while (true) {
-
-			Produto prod001 = new FrutoSeco(1, "Mix de Castanhas", 50.99f, 1, 1);
-			prod001.visualizar();
-			Produto prod002 = new FrutoSeco(1, "Nozes Premium", 30.99f, 1, 2);
-			prod002.visualizar();
-			Produto prod003 = new FrutoSeco(1, "Amêndoas Selecionadas", 30.99f, 1, 3);
-			prod003.visualizar();
-			
-			prod003.setNome("Mix de Amêndoas Selecionadas");
-			System.out.println(prod003.getNome());
 			
 			System.out.println(Cores.TEXT_WHITE + Cores.ANSI_BLACK_BACKGROUND
 					+ "*****************************************************");
@@ -61,23 +54,28 @@ public class Menu {
 
 			switch (opcao) {
 			case 1:
-				System.out.println(Cores.TEXT_WHITE + "Criar Produto\n\n");				
+				System.out.println(Cores.TEXT_WHITE + "Criar Produto\n\n");
+				cadastrarProduto();
 				keyPress();
 				break;
 			case 2:
 				System.out.println(Cores.TEXT_WHITE + "Listar todos os Produtos\n\n");
+				listarProdutos();
 				keyPress();
 				break;
 			case 3:
-				System.out.println(Cores.TEXT_WHITE + "Buscar Produto por Id\n\n");		
+				System.out.println(Cores.TEXT_WHITE + "Buscar Produto por Id\n\n");
+				procurarProdutoPorId();
 				keyPress();
 				break;
 			case 4:
-				System.out.println(Cores.TEXT_WHITE + "Atualizar Produto\n\n");	
+				System.out.println(Cores.TEXT_WHITE + "Atualizar Produto\n\n");
+				atualizarProduto();
 				keyPress();
 				break;
 			case 5:
 				System.out.println(Cores.TEXT_WHITE + "Deletar Produto\n\n");
+				deletarProduto();
 				keyPress();
 				break;
 			default:
@@ -100,4 +98,113 @@ public class Menu {
 		System.out.println(Cores.TEXT_RESET + "\n\nPressione Enter para continuar...");
 		leia.nextLine();
 	}
+	
+//	private static void criarProdutosTeste() {
+//		produtoController.cadastrar(new FrutoSeco(produtoController.gerarId(), "Nozes Premium", 30.99f, 1, 2));
+//		produtoController.cadastrar(new FrutoSeco(produtoController.gerarId(), "Mix de Castanhas", 50.99f, 1, 1));	
+//	}
+	
+	private static void listarProdutos() {
+		produtoController.listarTodas();
+	}
+	
+	private static void cadastrarProduto() {
+
+		System.out.print("Digite o nome do produto: ");
+		String nome = leia.nextLine();
+
+		System.out.print("Digite o Categoria do produto (1 - FrutoSeco): ");
+		int categoria = leia.nextInt();
+
+		System.out.print("Digite o Preço do produto: ");
+		float preco = leia.nextFloat();
+
+		switch (categoria) {
+		case 1 -> {
+			System.out.print("Digite o tipo de fruto (1 - Castanha | 2 - Noz | 3 - Amêndoa): ");
+			int tipoFruto = leia.nextInt();
+			leia.nextLine();
+			
+			produtoController.cadastrar(new FrutoSeco(produtoController.gerarId(), nome, preco,  categoria, tipoFruto));
+		}
+		default -> System.out.println(Cores.TEXT_RED + "Categoria de produto inválido!" + Cores.TEXT_RESET);
+		}
+	}
+	
+	private static void procurarProdutoPorId() {
+
+		System.out.print("Digite o Id do produto: ");
+		int id = leia.nextInt();
+		leia.nextLine();
+
+		produtoController.procurarPorId(id);
+	}
+	
+	private static void deletarProduto() {
+
+		System.out.print("Digite o Id do produto: ");
+		int id = leia.nextInt();
+		leia.nextLine();
+
+		Produto produto = produtoController.buscarNaCollection(id);
+
+		if (produto != null) {
+
+			System.out.print("\nTem certeza que deseja excluir o produto? (S/N): ");
+			String confirmacao = leia.nextLine();
+
+			if (confirmacao.equalsIgnoreCase("S")) {
+				produtoController.deletar(id);
+			} else {
+				System.out.println("\nOperação cancelada!");
+			}
+
+		} else {
+			System.out.printf("\nO produto Id %d não foi encontrado!", id);
+		}
+	}
+	
+	private static void atualizarProduto() {
+
+		System.out.print("Digite o Id do produto: ");
+		int id = leia.nextInt();
+		leia.nextLine();
+
+		Produto produto = produtoController.buscarNaCollection(id);
+
+		if (produto != null) {
+
+			String nome = produto.getNome();
+			int categoria = produto.getCategoria();
+			float preco = produto.getPreco();
+
+			System.out.printf(
+					"Nome atual: %s\nDigite o novo nome do Produto (Pressione ENTER para manter o valor atual): ", nome);
+			String entrada = leia.nextLine();
+			nome = entrada.isEmpty() ? nome : entrada;
+
+			System.out.printf("Preço atual: %.2f\nDigite o novo Preço (Pressione ENTER para manter o valor atual): ",
+					preco);
+			entrada = leia.nextLine();
+			preco = entrada.isEmpty() ? preco : Float.parseFloat(entrada.replace(",", "."));
+
+			switch (categoria) {
+			case 1 -> {
+				int tipoFruto = ((FrutoSeco) produto).getTipoFruto();
+				
+				System.out.printf(
+						"Tipo do fruto atual é: %d\nDigite o novo tipo de fruto (1 - Castanha | 2 - Noz | 3 - Amêndoa) (Pressione ENTER para manter o valor atual): ",
+						tipoFruto);
+				entrada = leia.nextLine();
+				tipoFruto = entrada.isEmpty() ? tipoFruto : Integer.parseInt(entrada.replace(",", "."));
+				produtoController.atualizar(new FrutoSeco(id, nome, preco, categoria, tipoFruto));
+			}
+			default -> System.out.println(Cores.TEXT_RED + "Categoria de produto inválido!" + Cores.TEXT_RESET);
+			}
+
+		} else {
+			System.out.printf("\nO produto número %d não foi encontrado!", id);
+		}
+	}
+
 }
