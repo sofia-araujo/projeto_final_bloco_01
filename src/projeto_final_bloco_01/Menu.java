@@ -3,6 +3,8 @@ package projeto_final_bloco_01;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import projeto_final_bloco_01.model.FrutoSeco;
+import projeto_final_bloco_01.model.Produto;
 import projeto_final_bloco_01.util.Cores;
 
 public class Menu {
@@ -13,6 +15,16 @@ public class Menu {
 		
 		while (true) {
 
+			Produto prod001 = new FrutoSeco(1, "Mix de Castanhas", 50.99f, 1, 1);
+			prod001.visualizar();
+			Produto prod002 = new FrutoSeco(1, "Nozes Premium", 30.99f, 1, 2);
+			prod002.visualizar();
+			Produto prod003 = new FrutoSeco(1, "Amêndoas Selecionadas", 30.99f, 1, 3);
+			prod003.visualizar();
+			
+			prod003.setNome("Mix de Amêndoas Selecionadas");
+			System.out.println(prod003.getNome());
+			
 			System.out.println(Cores.TEXT_WHITE + Cores.ANSI_BLACK_BACKGROUND
 					+ "*****************************************************");
 			System.out.println("                                                     ");
