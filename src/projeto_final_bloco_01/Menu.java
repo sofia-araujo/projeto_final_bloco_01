@@ -22,7 +22,7 @@ public class Menu {
 			System.out.println(Cores.TEXT_WHITE + Cores.ANSI_BLACK_BACKGROUND
 					+ "*****************************************************");
 			System.out.println("                                                     ");
-			System.out.println("              Nutivida Produtos Naturais             ");
+			System.out.println("              Nutrivida Produtos Naturais             ");
 			System.out.println("                                                     ");
 			System.out.println("*****************************************************");
 			System.out.println("                                                     ");
